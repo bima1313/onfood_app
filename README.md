@@ -1,6 +1,6 @@
 # onfood
 
-A new Flutter project.
+A Food Ordering app project. This project using dependencies firebase_core, cloud_firestore, provider, etc
 
 ## Getting Started
 
@@ -14,3 +14,16 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+## Screenshots
+<div align="left">
+    <a href="url"><img src="https://github.com/bima1313/onfood_app/blob/main/screenshots/splash%20screen.png" height="635" width="300" hspace="50"></a>    
+    <a href="url"><img src="https://github.com/bima1313/onfood_app/blob/main/screenshots/login%20screen.png" height="635" width="300"></a>
+</div>
+<br>
+<br>
+<div align="center">
+    <a href="url"><img src="https://github.com/bima1313/onfood_app/blob/main/screenshots/home%20view.png" height="635" width="300" hspace="25"></a>
+    <a href="url"><img src="https://github.com/bima1313/onfood_app/blob/main/screenshots/detail%20order.jpg" height="635" width="300" hspace="25"></a>
+    <a href="url"><img src="https://github.com/bima1313/onfood_app/blob/main/screenshots/history.jpg" height="635" width="300"></a>
+</div>
