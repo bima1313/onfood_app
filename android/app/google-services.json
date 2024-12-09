@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "212315316946",
+    "project_id": "onfood-apps",
+    "storage_bucket": "onfood-apps.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:212315316946:android:b920775fc45d0ebb41830b",
+        "android_client_info": {
+          "package_name": "inovation.apps.onfood"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCz-DLBThwDTgDvpu4dePYcrXH4yhXM8fs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:212315316946:android:29c2051f00c999a741830b",
+        "android_client_info": {
+          "package_name": "inovation.apps.onfood_admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCz-DLBThwDTgDvpu4dePYcrXH4yhXM8fs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
