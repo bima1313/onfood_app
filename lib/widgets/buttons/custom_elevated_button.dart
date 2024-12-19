@@ -6,13 +6,22 @@ import 'package:onfood/constants/routes.dart';
 import 'package:provider/provider.dart';
 
 class CustomElevatedButton extends StatelessWidget {
-  final int discount;
-  final String documentId;
+  /// Creates a [CustomElevatedButton].
+  ///
+  /// Navigate the cart to [DetailOrderView].
+  /// The [documentId] and [discount] arguments must be not null.
+
   const CustomElevatedButton({
     super.key,
     required this.discount,
     required this.documentId,
   });
+
+  /// reading the discount from coupon data
+  final int discount;
+
+  /// reading the document id from coupon data
+  final String documentId;
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +34,21 @@ class CustomElevatedButton extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).colorScheme.primary,
-            fixedSize: const Size(350, 35)),
-        onPressed: () {
+            fixedSize: const Size(double.infinity, 35)),
+        onPressed: () async {
           if (items != 0) {
-            providerData.usingCoupon(
-              discount: discount,
-              couponId: documentId,
-            );
+            if (providerData.couponInUsed == false || discount == 0) {
+              providerData.usingCoupon(
+                discount: discount,
+                couponId: documentId,
+              );
+              providerData.coupon(inUsed: false);
+            } else {
+              providerData.usingCoupon(
+                discount: 0,
+                couponId: '',
+              );
+            }
             Navigator.of(context).pushNamed(detailOrderRoute);
           }
         },
@@ -43,18 +60,24 @@ class CustomElevatedButton extends StatelessWidget {
                 children: [
                   const Icon(Icons.shopping_cart, color: Colors.white),
                   (items != 0)
-                      ? CustomText(text: ' = $items item', fontType: 'normal')
-                      : const CustomText(text: ' = 0 item', fontType: 'normal'),
+                      ? CustomText(
+                          text: ' = $items item',
+                          fontWeight: FontWeight.bold,
+                        )
+                      : const CustomText(
+                          text: ' = 0 item',
+                          fontWeight: FontWeight.bold,
+                        ),
                 ],
               ),
               (totalBuy != 0)
                   ? CustomText(
                       text: 'Total = Rp.${currency.format(totalBuy)}',
-                      fontType: 'normal',
+                      fontWeight: FontWeight.bold,
                     )
                   : const CustomText(
                       text: 'Total = Rp.0',
-                      fontType: 'normal',
+                      fontWeight: FontWeight.bold,
                     )
             ],
           ),

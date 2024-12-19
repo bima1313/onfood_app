@@ -46,10 +46,7 @@ class SettingScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(context).pushNamed(editProfileRoute);
                       },
-                      child: const CustomText(
-                        text: 'Edit Profile',
-                        fontType: 'normal',
-                      ),
+                      child: const CustomText(text: 'Edit Profile'),
                     ),
                   ),
                   ElevatedButton(
@@ -61,17 +58,14 @@ class SettingScreen extends StatelessWidget {
                       if (shouldLogout) {
                         providerData.reset();
                         AuthService().logOut();
-                        if (!context.mounted) return;
+
                         Navigator.of(context).pushNamedAndRemoveUntil(
                           loginRoute,
                           (route) => false,
                         );
                       }
                     },
-                    child: const CustomText(
-                      text: 'Keluar',
-                      fontType: 'normal',
-                    ),
+                    child: const CustomText(text: 'Keluar'),
                   ),
                 ],
               );

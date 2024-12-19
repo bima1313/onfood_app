@@ -74,7 +74,7 @@ class _LoginViewState extends State<LoginView> {
                     fixedSize: const Size(350, 35),
                   ),
                   onPressed: () async {
-                    EasyLoading.show(status: 'Loading...');
+                    EasyLoading.show(status: 'Loading...', dismissOnTap: true);
                     final email = _emailController.text;
                     final password = _passwordController.text;
                     try {
@@ -99,7 +99,6 @@ class _LoginViewState extends State<LoginView> {
                       } else {
                         // user's email is NOT verified
                         EasyLoading.dismiss();
-                        if (!context.mounted) return;
                         Navigator.of(context).pushNamedAndRemoveUntil(
                           verifyEmailRoute,
                           (route) => false,
@@ -140,7 +139,7 @@ class _LoginViewState extends State<LoginView> {
                       );
                     }
                   },
-                  child: const CustomText(text: 'Login', fontType: 'normal'),
+                  child: const CustomText(text: 'Login'),
                 ),
               ),
               TextButton(

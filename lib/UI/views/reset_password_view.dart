@@ -70,14 +70,12 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                   backgroundColor: Theme.of(context).colorScheme.primary,
                 ),
                 onPressed: () async {
-                  EasyLoading.show(status: 'Loading...');
+                  EasyLoading.show(status: 'Loading...', dismissOnTap: true);
                   final email = _emailController.text;
                   try {
                     await AuthService().sendPasswordReset(toEmail: email);
                     EasyLoading.dismiss();
-                    if (!context.mounted) return;
                     await showPasswordResetSentDialog(context);
-                    if (!context.mounted) return;
                     Navigator.of(context).pushNamedAndRemoveUntil(
                       loginRoute,
                       (route) => false,
@@ -98,10 +96,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
                 },
-                child: const CustomText(
-                  text: 'Reset Password',
-                  fontType: 'normal',
-                ),
+                child: const CustomText(text: 'Reset Password'),
               ),
             ),
           ],

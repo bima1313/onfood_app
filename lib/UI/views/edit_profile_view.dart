@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:onfood/widgets/custom_text.dart';
 import 'package:onfood/constants/routes.dart';
-import 'package:onfood/services/auth/auth_exceptions.dart';
 import 'package:onfood/services/auth/auth_service.dart';
 import 'package:onfood/services/cloud/constructor/users.dart';
 import 'package:onfood/services/cloud/firebase_cloud_storage.dart';
-import 'package:onfood/utilities/dialogs/change_email_dialog.dart';
-import 'package:onfood/utilities/dialogs/error_dialog.dart';
+import 'package:onfood/widgets/buttons/edit_profile_button.dart';
 
 class EditProfileView extends StatefulWidget {
   const EditProfileView({super.key});
@@ -27,16 +24,6 @@ class _EditProfileViewState extends State<EditProfileView> {
   String get userId => AuthService().currentUser!.id;
   String get displayNameUser => AuthService().currentUser!.displayName;
   String get emailUser => AuthService().currentUser!.email;
-
-  List<String> checkUsername(Iterable<Users> usernames) {
-    List<String> usernameData = [];
-    for (int i = 0; i < usernames.length; i++) {
-      final data = usernames.elementAt(i);
-      usernameData.add(data.username);
-    }
-
-    return usernameData;
-  }
 
   @override
   void initState() {
@@ -141,119 +128,16 @@ class _EditProfileViewState extends State<EditProfileView> {
                             Navigator.of(context)
                                 .pushNamed(changePasswordRoute);
                           },
-                          child: const CustomText(
-                            text: 'Ganti Password',
-                            fontType: 'normal',
-                          ),
+                          child: const CustomText(text: 'Ganti Password'),
                         ),
                       ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            fixedSize: const Size(350, 35)),
-                        onPressed: () async {
-                          EasyLoading.show(status: 'Loading...');
-                          try {
-                            if (_displayNameController.text != '' &&
-                                _displayNameController.text != ' ') {
-                              Iterable<Users> usernames =
-                                  await _usersService.users();
-                              List<String> usernameData =
-                                  checkUsername(usernames);
-                              if (usernameData
-                                  .contains(_usernameController.text)) {
-                                EasyLoading.dismiss();
-                                if (!context.mounted) return;
-                                await showErrorDialog(
-                                  context,
-                                  'username yang anda masukkan sudah ada. Silahkan masukkan username yang lain',
-                                );
-                                const snackBar = SnackBar(
-                                  duration: Duration(seconds: 1),
-                                  content: Text('Update Profile gagal'),
-                                );
-                                if (!context.mounted) return;
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackBar);
-                              } else {
-                                await AuthService().updateDisplayNameUser(
-                                  displayName: _displayNameController.text,
-                                );
-                                await AuthService().updateEmailUser(
-                                  newEmail: _emailController.text,
-                                );
-                                await _usersService.updateUserData(
-                                  documentId: data.documentId,
-                                  username: _usernameController.text,
-                                  phoneNumber: _phoneNumberController.text,
-                                );
-                                if (_emailController.text != emailUser) {
-                                  const String text1 =
-                                      'Email Verifikasi sudah Terkirim ke email baru anda.';
-                                  const String text2 =
-                                      'silahkan cek dan verifikasi email baru anda untuk perubahan email';
-                                  if (!context.mounted) return;
-                                  EasyLoading.dismiss();
-                                  await showChangingEmailDialog(
-                                    context,
-                                    '$text1 $text2',
-                                  );
-                                  EasyLoading.show(status: 'Loading...');
-                                }
-                                EasyLoading.showSuccess(
-                                  'Update Profile Berhasil',
-                                );
-                                EasyLoading.dismiss();
-
-                                Future.delayed(
-                                  const Duration(milliseconds: 1000),
-                                  () {
-                                    Navigator.of(context)
-                                        .pushNamedAndRemoveUntil(
-                                      homeRoute,
-                                      (route) => false,
-                                    );
-                                  },
-                                );
-                              }
-                            } else {
-                              EasyLoading.dismiss();
-                              await showErrorDialog(
-                                  context, 'Nama Pengguna tidak boleh kosong');
-                            }
-                          } on EmailAlreadyInUseAuthException {
-                            EasyLoading.dismiss();
-                            if (!context.mounted) return;
-                            await showErrorDialog(
-                                context, 'Email sudah Terdaftar');
-                          } on RequiresRecentLoginAuthException {
-                            EasyLoading.dismiss();
-                            if (!context.mounted) return;
-                            await showErrorDialog(context,
-                                'Update Profile Gagal, Silahkan login ulang');
-                          } on UserTokenExpiredAuthException {
-                            EasyLoading.dismiss();
-                            if (!context.mounted) return;
-                            await showErrorDialog(context,
-                                'Email sudah diganti, silahkan login ulang');
-                          } on TooManyRequestsAuthException {
-                            EasyLoading.dismiss();
-                            if (!context.mounted) return;
-                            await showErrorDialog(context,
-                                'Terlalu banyak Request. Silahkan Coba lagi nanti');
-                          } on GenericAuthException {
-                            EasyLoading.dismiss();
-                            if (!context.mounted) return;
-                            await showErrorDialog(
-                                context, 'Authentication Error');
-                          }
-                        },
-                        child: const CustomText(
-                          text: 'Edit Profile',
-                          fontType: 'normal',
-                        ),
-                      ),
+                      EditProfileButton(
+                        documentId: data.documentId,
+                        displayNameController: _displayNameController.text,
+                        emailController: _emailController.text,
+                        phoneNumberController: _phoneNumberController.text,
+                        usernameController: _usernameController.text,
+                      )
                     ],
                   );
                 } else {

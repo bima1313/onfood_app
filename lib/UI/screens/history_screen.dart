@@ -7,6 +7,8 @@ import 'package:onfood/services/auth/auth_service.dart';
 import 'package:onfood/services/cloud/constructor/cloud_coupons.dart';
 import 'package:onfood/services/cloud/constructor/cloud_orders.dart';
 import 'package:onfood/services/cloud/firebase_cloud_storage.dart';
+import 'package:onfood/utilities/casting_date_time.dart';
+import 'package:onfood/utilities/sorting_orders.dart';
 import 'package:provider/provider.dart';
 
 class HistoryScreen extends StatefulWidget {
@@ -27,19 +29,21 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   Future<List> getData() async {
-    final coupons = await _orderService.allCoupon();
-    final allOrder = await _orderService.allorder(ownerUserId: userId);
+    final CloudCoupons coupon = await _orderService.getCoupon(
+      ownerUserId: userId,
+    );
+    final Iterable<CloudOrders> allOrder = await _orderService.allOrder(
+      ownerUserId: userId,
+    );
 
-    return [coupons, allOrder];
+    return [coupon, allOrder];
   }
 
   @override
   Widget build(BuildContext context) {
     final HistoryProvider providerHistory = context.watch<HistoryProvider>();
-    final OrdersProvider providerdata = context.watch<OrdersProvider>();
+    final OrdersProvider providerData = context.watch<OrdersProvider>();
     final NumberFormat currency = NumberFormat("#,##0", 'ID');
-    int discount;
-    String documentId;
 
     return Scaffold(
       body: FutureBuilder(
@@ -47,29 +51,24 @@ class _HistoryScreenState extends State<HistoryScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             final data = snapshot.data as List;
-            final getCoupon = data[0] as Iterable<CloudCoupons>;
+            final coupon = data[0] as CloudCoupons;
             final userOrders = data[1] as Iterable<CloudOrders>;
-            final couponData = getCoupon.where(
-              (element) => element.userId == userId,
-            );
-            if (couponData.isNotEmpty) {
-              discount = couponData.first.discount;
-              documentId = couponData.first.documentId;
-            } else {
-              discount = 0;
-              documentId = '';
-            }
+
             if (userOrders.isNotEmpty) {
               return ListView.builder(
                 itemCount: userOrders.length,
                 itemBuilder: (context, index) {
                   final CloudOrders order = userOrders.elementAt(index);
+                  final Map<String, dynamic> sortedOrders = sortingOrders(
+                    orders: order.userOrders,
+                  );
+                  final dateTime = order.dateTime.toDate();
                   return ListTile(
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          order.userOrders.keys.first,
+                          sortedOrders.keys.first,
                           maxLines: 1,
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,
@@ -77,7 +76,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          order.dateTime,
+                          castToID(dateTime: dateTime),
                           style: const TextStyle(fontSize: 16),
                         ),
                       ],
@@ -85,7 +84,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     subtitle: Text(
                       'lihat selengkapnya',
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     trailing: Text(
@@ -96,16 +97,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       providerHistory.getHistory(
                         documentId: order.documentId,
                         dateTime: order.dateTime,
-                        userOrder: order.userOrders,
+                        userOrder: sortedOrders,
                         tableNumber: order.tableNumber,
                         total: order.totalPayment,
                         donePayment: order.donePayment,
                         information: order.information,
                       );
-                      providerdata.usingCoupon(
-                        discount: discount,
-                        couponId: documentId,
+                      providerHistory.ordersLength(length: userOrders.length);
+                      providerData.usingCoupon(
+                        discount: coupon.discount,
+                        couponId: coupon.documentId,
                       );
+
                       Navigator.of(context).pushNamed(detailHistoryRoute);
                     },
                   );

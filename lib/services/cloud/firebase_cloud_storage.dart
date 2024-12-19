@@ -11,7 +11,7 @@ class FirebaseCloudStorage {
   final usersCollections = FirebaseFirestore.instance.collection('users');
   final menusCollections = FirebaseFirestore.instance.collection('menus');
   final ordersCollections = FirebaseFirestore.instance.collection('orders');
-  final couponCollections = FirebaseFirestore.instance.collection('coupon');
+  final couponsCollections = FirebaseFirestore.instance.collection('coupons');
 
   Future<Iterable<CloudMenus>> allMenu() async {
     try {
@@ -23,12 +23,38 @@ class FirebaseCloudStorage {
     }
   }
 
+  Future<CloudMenus> specificMenu({required String menuName}) async {
+    try {
+      return await menusCollections
+          .where(menuNameFieldName, isEqualTo: menuName)
+          .get()
+          .then((value) =>
+              value.docs.map((doc) => CloudMenus.fromSnapshot(doc)).single);
+    } catch (e) {
+      throw CouldNotGetSpecificMenuException();
+    }
+  }
+
+  Future<Iterable<CloudOrders>> allOrder({required String ownerUserId}) async {
+    try {
+      return await ordersCollections
+          .where(ownerUserIdFieldName, isEqualTo: ownerUserId)
+          .orderBy(dateTimeFieldName, descending: true)
+          .get()
+          .then(
+            (value) => value.docs.map((doc) => CloudOrders.fromSnapshot(doc)),
+          );
+    } catch (e) {
+      throw CouldNotGetAllOrdersException();
+    }
+  }
+
   Future<CloudOrders> createOrder({
     required String ownerUserId,
     required String displayName,
-    required String dateTimeOrder,
+    required Timestamp dateTimeOrder,
     required String tableNumber,
-    required Map orders,
+    required Map<String, dynamic> orders,
     required int totalPayment,
     required bool donePayment,
     required String information,
@@ -57,20 +83,6 @@ class FirebaseCloudStorage {
     );
   }
 
-  Future<Iterable<CloudOrders>> allorder({required String ownerUserId}) async {
-    try {
-      return await ordersCollections
-          .where(ownerUserIdFieldName, isEqualTo: ownerUserId)
-          .orderBy(dateTimeFieldName, descending: true)
-          .get()
-          .then(
-            (value) => value.docs.map((doc) => CloudOrders.fromSnapshot(doc)),
-          );
-    } catch (e) {
-      throw CouldNotGetAllOrdersException();
-    }
-  }
-
   Future<void> deleteOrder({
     required String documentId,
   }) async {
@@ -81,12 +93,30 @@ class FirebaseCloudStorage {
     }
   }
 
+  Future<Iterable<CloudOrders>> historyOrder({
+    required String ownerUserId,
+  }) async {
+    try {
+      return await ordersCollections
+          .where(ownerUserIdFieldName, isEqualTo: ownerUserId)
+          .where(donePaymentFieldName, isEqualTo: true)
+          .get()
+          .then(
+            (value) => value.docs.map(
+              (doc) => CloudOrders.fromSnapshot(doc),
+            ),
+          );
+    } catch (e) {
+      throw CouldNotGetAllOrdersException();
+    }
+  }
+
   Future<CloudCoupons> createCoupon({
     required String documentId,
     required String ownerUserId,
     required int reward,
   }) async {
-    await couponCollections.doc(documentId).set({
+    await couponsCollections.doc(documentId).set({
       ownerUserIdFieldName: ownerUserId,
       discountFieldName: reward,
     });
@@ -101,29 +131,41 @@ class FirebaseCloudStorage {
     required String documentId,
   }) async {
     try {
-      await couponCollections.doc(documentId).delete();
+      await couponsCollections.doc(documentId).delete();
     } catch (e) {
       throw CouldNotDeleteCouponException();
     }
   }
 
-  Future<void> deleteCoupon({
-    required String documentId,
-  }) async {
+  Future<CloudCoupons> getCoupon({required String ownerUserId}) async {
     try {
-      await couponCollections.doc(documentId).delete();
-    } catch (e) {
-      throw CouldNotDeleteCouponException();
-    }
-  }
-
-  Future<Iterable<CloudCoupons>> allCoupon() async {
-    try {
-      return await couponCollections.get().then(
-            (value) => value.docs.map((doc) => CloudCoupons.fromSnapshot(doc)),
+      return await couponsCollections
+          .where(ownerUserIdFieldName, isEqualTo: ownerUserId)
+          .get()
+          .then(
+            (value) =>
+                value.docs.map((doc) => CloudCoupons.fromSnapshot(doc)).single,
           );
     } catch (e) {
-      throw CouldNotGetAllCouponsException();
+      return const CloudCoupons(documentId: '', userId: '', discount: 0);
+    }
+  }
+
+  /// To detect if the coupon has been used
+  Future<void> changeDocumentId({
+    required String ownerUserId,
+    required int discount,
+    required String newDocumentId,
+    required String oldDocumentId,
+  }) async {
+    try {
+      await couponsCollections.doc(newDocumentId).set({
+        ownerUserIdFieldName: ownerUserId,
+        discountFieldName: discount,
+      });
+      await couponsCollections.doc(oldDocumentId).delete();
+    } catch (e) {
+      throw CouldNotUpdateCouponException();
     }
   }
 

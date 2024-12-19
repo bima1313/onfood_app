@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
 class CustomText extends StatelessWidget {
-  final String text;
-  final String fontType;
   const CustomText({
     super.key,
     required this.text,
-    required this.fontType,
+    this.fontWeight = FontWeight.normal,
   });
+
+  final String text;
+
+  /// The thickness of the glyphs used to draw the text.
+  final FontWeight fontWeight;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +20,7 @@ class CustomText extends StatelessWidget {
       style: TextStyle(
         fontSize: 18,
         color: Colors.white,
-        fontWeight: (fontType == 'bold') ? FontWeight.bold : FontWeight.normal,
+        fontWeight: fontWeight,
       ),
     );
   }

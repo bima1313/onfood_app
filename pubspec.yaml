@@ -29,12 +29,12 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   cloud_firestore: ^5.5.1
-  cupertino_icons: ^1.0.8
   firebase_auth: ^5.3.4
   firebase_core: ^3.8.1
   flutter:
     sdk: flutter
   flutter_easyloading: ^3.0.5
+  flutter_slidable: ^3.1.2
   intl: ^0.20.1
   provider: ^6.1.2
 

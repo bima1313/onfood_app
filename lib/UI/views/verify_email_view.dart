@@ -38,7 +38,10 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         fixedSize: const Size(250, 35)),
                     onPressed: () async {
-                      EasyLoading.show(status: 'Loading...');
+                      EasyLoading.show(
+                        status: 'Loading...',
+                        dismissOnTap: true,
+                      );
                       try {
                         await AuthService().sendEmailVerification();
                         EasyLoading.dismiss();
@@ -46,7 +49,6 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                           duration: Duration(seconds: 1),
                           content: Text('Email Verifikasi sudah Terkirim'),
                         );
-                        if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       } on TooManyRequestsAuthException {
                         EasyLoading.dismiss();
@@ -57,10 +59,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                         await showErrorDialog(context, 'Authentication Error');
                       }
                     },
-                    child: const CustomText(
-                      text: 'Kirim Email Verifikasi',
-                      fontType: 'normal',
-                    ),
+                    child: const CustomText(text: 'Kirim Email Verifikasi'),
                   ),
                 ),
                 ElevatedButton(
@@ -71,10 +70,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil(loginRoute, (route) => false);
                   },
-                  child: const CustomText(
-                    text: 'login',
-                    fontType: 'normal',
-                  ),
+                  child: const CustomText(text: 'login'),
                 ),
               ],
             ),

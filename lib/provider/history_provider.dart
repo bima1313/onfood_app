@@ -1,18 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class HistoryProvider extends ChangeNotifier {
-  String _documentId = '';
-  String _dateTime = '';
-  Map _userOrder = {};
-  String _tableNumber = '';
-  int _total = 0;
   bool _donePayment = false;
+  int _length = 0;
+  int _total = 0;
+  Map<String, dynamic> _userOrder = {};
+  String _documentId = '';
+  String _tableNumber = '';
   String _information = '';
+  Timestamp _dateTime = Timestamp.now();
 
   void getHistory({
     required String documentId,
-    required String dateTime,
-    required Map userOrder,
+    required Timestamp dateTime,
+    required Map<String, dynamic> userOrder,
     required String tableNumber,
     required int total,
     required bool donePayment,
@@ -29,11 +31,18 @@ class HistoryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String get documentId => _documentId;
-  String get dateTime => _dateTime;
-  Map get userOrder => _userOrder;
-  String get tableNumber => _tableNumber;
-  int get total => _total;
+  void ordersLength({required int length}) {
+    _length = length;
+
+    notifyListeners();
+  }
+
   bool get donePayment => _donePayment;
+  int get userOrdersLength => _length;
+  int get total => _total;
+  Map<String, dynamic> get userOrder => _userOrder;
   String get information => _information;
+  String get documentId => _documentId;
+  String get tableNumber => _tableNumber;
+  Timestamp get dateTime => _dateTime;
 }

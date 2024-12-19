@@ -7,9 +7,9 @@ class CloudOrders {
   final String documentId;
   final String userId;
   final String displayName;
-  final String dateTime;
+  final Timestamp dateTime;
   final String tableNumber;
-  final Map userOrders;
+  final Map<String, dynamic> userOrders;
   final int totalPayment;
   final bool donePayment;
   final String information;

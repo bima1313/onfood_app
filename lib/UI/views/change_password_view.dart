@@ -84,7 +84,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                   fixedSize: const Size(350, 35),
                 ),
                 onPressed: () async {
-                  EasyLoading.show(status: 'Loading...');
+                  EasyLoading.show(status: 'Loading...', dismissOnTap: true);
                   if (_passwordController.text ==
                       _confirmPasswordController.text) {
                     try {
@@ -96,7 +96,6 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                         duration: Duration(seconds: 1),
                         content: Text('Ganti Password Berhasil'),
                       );
-                      if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     } on RequiresRecentLoginAuthException {
                       EasyLoading.dismiss();
@@ -115,10 +114,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                     await showErrorDialog(context, 'ganti password gagal');
                   }
                 },
-                child: const CustomText(
-                  text: 'Ganti Password',
-                  fontType: 'normal',
-                ),
+                child: const CustomText(text: 'Ganti Password'),
               ),
             ],
           ),

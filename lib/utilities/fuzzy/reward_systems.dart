@@ -1,7 +1,7 @@
 import 'package:onfood/utilities/fuzzy/fuzzy_logic.dart';
 import 'package:onfood/utilities/fuzzy/membership_function.dart';
 
-// a reward systems using a fuzzy logic
+/// An Reward Systems using a Fuzzy Logic
 int rewardSystems({
   required int numberPurchasesInput,
   required int totalSpendingInput,

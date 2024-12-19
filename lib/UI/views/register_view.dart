@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:onfood/widgets/custom_text.dart';
 import 'package:onfood/constants/routes.dart';
-import 'package:onfood/services/auth/auth_exceptions.dart';
-import 'package:onfood/services/auth/auth_service.dart';
 import 'package:onfood/services/cloud/constructor/users.dart';
-import 'package:onfood/services/cloud/firebase_cloud_storage.dart';
-import 'package:onfood/utilities/dialogs/error_dialog.dart';
+import 'package:onfood/widgets/buttons/register_button.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -17,7 +12,6 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
-  late final FirebaseCloudStorage _usersService;
   late final TextEditingController _displayNameController;
   late final TextEditingController _phoneController;
   late final TextEditingController _usernameController;
@@ -36,7 +30,6 @@ class _RegisterViewState extends State<RegisterView> {
 
   @override
   void initState() {
-    _usersService = FirebaseCloudStorage();
     _displayNameController = TextEditingController();
     _phoneController = TextEditingController();
     _usernameController = TextEditingController();
@@ -120,74 +113,12 @@ class _RegisterViewState extends State<RegisterView> {
                   labelText: 'Password',
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15.0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: const Size(350, 35),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                  ),
-                  child: const CustomText(text: 'Daftar', fontType: 'normal'),
-                  onPressed: () async {
-                    EasyLoading.show(status: 'Loading...');
-                    Iterable<Users> usernames = await _usersService.users();
-                    List<String> usernameData = checkUsername(usernames);
-
-                    if (usernameData.contains(_usernameController.text)) {
-                      EasyLoading.dismiss();
-                      if (!context.mounted) return;
-                      await showErrorDialog(
-                        context,
-                        'username yang anda masukkan sudah ada. Silahkan masukkan username yang lain',
-                      );
-                      const snackBar = SnackBar(
-                        duration: Duration(seconds: 1),
-                        content: Text('Akun gagal Dibuat'),
-                      );
-                      if (!context.mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    } else {
-                      try {
-                        await AuthService().createUser(
-                          displayName: _displayNameController.text,
-                          email: _emailController.text,
-                          password: _passwordController.text,
-                        );
-                        await AuthService().sendEmailVerification();
-                        final userId = AuthService().currentUser!.id;
-                        await _usersService.createUser(
-                          userId: userId,
-                          username: _usernameController.text,
-                          phoneNumber: _phoneController.text,
-                        );
-                        EasyLoading.dismiss();
-                        const snackBar = SnackBar(
-                          duration: Duration(seconds: 1),
-                          content: Text('akun berhasil dibuat'),
-                        );
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      } on EmailAlreadyInUseAuthException {
-                        EasyLoading.dismiss();
-                        if (!context.mounted) return;
-                        await showErrorDialog(context, 'Email sudah Terdaftar');
-                      } on InvalidEmailAuthException {
-                        EasyLoading.dismiss();
-                        if (!context.mounted) return;
-                        await showErrorDialog(context, 'Invalid Email');
-                      } on WeakPasswordAuthException {
-                        EasyLoading.dismiss();
-                        if (!context.mounted) return;
-                        await showErrorDialog(context,
-                            'Password yang anda masukkan lemah, Silahkan masukkan lebih kuat');
-                      } on GenericAuthException {
-                        EasyLoading.dismiss();
-                        if (!context.mounted) return;
-                        await showErrorDialog(context, 'Authentication Error');
-                      }
-                    }
-                  },
-                ),
+              RegisterButton(
+                displayNameController: _displayNameController.text,
+                emailController: _emailController.text,
+                passwordController: _passwordController.text,
+                phoneNumberController: _phoneController.text,
+                usernameController: _usernameController.text,
               ),
               TextButton(
                 onPressed: () {

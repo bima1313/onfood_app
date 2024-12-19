@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:onfood/UI/views/change_password_view.dart';
 import 'package:onfood/UI/views/detail_history_view.dart';
 import 'package:onfood/UI/views/detail_order_view.dart';
@@ -18,6 +19,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  initializeDateFormatting();
   runApp(
     MultiProvider(
       providers: [
@@ -32,12 +34,12 @@ void main() async {
         debugShowCheckedModeBanner: false,
         title: 'onfood',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
           colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromARGB(255, 255, 166, 47),
             primary: const Color.fromARGB(255, 255, 166, 47),
             secondary: const Color.fromARGB(255, 255, 201, 111),
           ),
+          primarySwatch: Colors.blue,
           useMaterial3: true,
         ),
         home: const App(),

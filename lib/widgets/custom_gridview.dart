@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:onfood/widgets/custom_round_button.dart';
+import 'package:onfood/widgets/buttons/custom_round_button.dart';
 import 'package:onfood/provider/orders_provider.dart';
 import 'package:onfood/services/cloud/constructor/cloud_menus.dart';
 import 'package:provider/provider.dart';
 
 class CustomGridView extends StatelessWidget {
-  final Iterable<CloudMenus> menus;
-  final String category;
-
+  /// Creates a [CustomGridView].
+  ///
+  /// The [menus] and [category] arguments must be not null.
   const CustomGridView({
     super.key,
     required this.menus,
     required this.category,
   });
 
+  /// The menus to display of grid view.
+  final Iterable<CloudMenus> menus;
+
+  /// The category menus of grid view.
+  final String category;
+
   @override
   Widget build(BuildContext context) {
     final OrdersProvider providerData = context.watch<OrdersProvider>();
-    final Map userOrder = providerData.getUserOrders;
+    final Map<String, dynamic> userOrder = providerData.getUserOrders;
     final NumberFormat currency = NumberFormat("#,##0", 'ID');
     final Iterable<CloudMenus> menuCategory = menus.where(
       (element) => element.category == category,
@@ -84,11 +90,11 @@ class CustomGridView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    CustomRoundButton(icon: 'remove', menu: menu),
+                    CustomRoundButton(icon: Icons.remove, menu: menu),
                     (userOrder[menu.menuName] == null)
                         ? const Text('0')
                         : Text(userOrder[menu.menuName].toString()),
-                    CustomRoundButton(icon: 'add', menu: menu),
+                    CustomRoundButton(icon: Icons.add, menu: menu),
                   ],
                 )
               ],

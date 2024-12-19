@@ -1,6 +1,6 @@
 import 'dart:math';
 
-// fuzzy logic Tsukamoto
+/// Fuzzy Logic Tsukamoto
 int fuzzy({
   required double numberPurchasesLow,
   required double numberPurchasesMedium,
