@@ -19,6 +19,7 @@ samples, guidance on mobile development, and a full API reference.
 <div align="left">
     <a href="url"><img src="https://github.com/bima1313/onfood_app/blob/main/screenshots/splash%20screen.png" height="635" width="300" hspace="25"></a>    
     <a href="url"><img src="https://github.com/bima1313/onfood_app/blob/main/screenshots/login%20view.png" height="635" width="300"></a>
+    <br>
     <a href="url"><img src="https://github.com/bima1313/onfood_app/blob/main/screenshots/register%20view.png" height="635" width="300" hspace="25></a>
     <a href="url"><img src="https://github.com/bima1313/onfood_app/blob/main/screenshots/reset%20password%20view.png" height="635" width="300"></a>        
 </div>
